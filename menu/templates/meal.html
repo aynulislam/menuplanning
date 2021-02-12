@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main %}
+
+
+
+<div class="container-fluid">
+      <!-- Content Row -->
+    <div class="row">
+    <!-- Content Column -->
+        <div class="col-lg-12 col-md-12 mb-4">
+            <!-- Project Card Example -->
+            <div class="card shadow mb-4">
+            <div class="card-header py-6">
+                <h4 class="m-0 font-weight-bold text-center text-info">All Meal List</h4>
+            </div>
+            <div class="mt-5 ml-5 mb-4">
+                <button class="btn btn-info" data-target="#myModal" data-toggle="modal">Add Meal</button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Name</th>
+                        <th>View</th>
+                        <th>Edit</th>
+                        <th>status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for meal in all_meal %}
+                        <tr>    
+                            <th>{{ forloop.counter }}</th>
+                            <th>{{ meal.name }}</th>
+                            <th>
+                                <a data-id="{{ meal.id }}" data-target="#viewMealModal" data-toggle="modal" class="viewMealSetupBtn">
+                                    <button class="btn btn-secondary btn-circle">
+                                       <i class="fab fa-readme"></i>
+                                    </button>
+                                </a>
+                            </th>
+
+                            <th>
+                                <a data-id="{{ meal.id }}" data-target="#editMealModal" data-toggle="modal"  class="editMealSetupBtn">
+                                    <button class="btn btn-warning btn-circle">
+                                        <i class="fas fa-broom"></i>
+                                    </button>
+                                </a>
+                            </th>
+
+                            <th>
+
+                                <a href="{% url 'delete_meal_setup' meal.id %}" onclick="return confirm('Are you sure ?')" class="deleteMealSetupBtn">
+
+                                    {% if meal.status == True %}
+                                        <button class="btn btn-success">
+                                            Available
+                                        </button>
+                                    {% elif meal.status == False%}
+                                        <button class="btn btn-danger ">
+                                            Unavailable
+                                        </button>
+                                    {% endif %}
+                                </a>
+                            </th>                                                   
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="text-center">Add Meal</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form  method="post" action="{% url 'add_meal_setup' %}"  class="form-sample">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="name" required="required"
+                                               class="form-control name" placeholder="enter your meal name......"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label"></label>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-success mr-2 col-md-4">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <div class="modal fade" id="viewMealModal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="text-center">Meal Details</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="name" required="required"
+                                               class="form-control viewName" placeholder="name" readonly/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="modal fade" id="editMealModal" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="text-center">Update Meal</h3>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form  method="post" action="{% url 'update_meal_setup' %}"  class="form-sample">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" name="name" required="required"
+                                               class="form-control editName" placeholder="name"/>
+                                        <input type="hidden" class="mealSetupId" name="id">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label"></label>
+                                    <div class="col-sm-9">
+                                        <button type="submit" class="btn btn-success mr-2 col-md-4">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+
+
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#dataTable').DataTable({
+            "pageLength": 10
+        });
+    } );
+    
+</script>
+
+
+<script>
+
+    // sending id to backend and if successful then send it to frontend for viewing details
+
+    $('.viewMealSetupBtn').click(function(){
+        
+        $.ajax({
+            url: "{% url 'view_meal_setup' %}",
+            dataType: 'json',
+            type: 'POST',
+            data: {id: $(this).data('id')},
+            success: function(json){
+                console.log(json);
+                $('.viewName').val(json['getMealSetupById'][0]['name']);
+               
+                
+            }
+        });
+    });
+
+
+   // for editing meal
+
+    $('.editMealSetupBtn').click(function(){
+       $.ajax({
+            url: "{% url 'view_meal_setup' %}",
+            dataType: 'json',
+            type: 'POST',
+            data: {id: $(this).data('id')},
+            success: function(json){
+                console.log(json);
+                $('.editName').val(json['getMealSetupById'][0]['name']);              
+                $('.mealSetupId').val(json['getMealSetupById'][0]['id']);
+                $('.status').val(json['getMealSetupById'][0]['status']);
+
+            }
+        }); 
+    });
+
+
+</script>
+
+{% endblock %}
+
+
