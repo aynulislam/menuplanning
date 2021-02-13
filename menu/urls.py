@@ -21,6 +21,6 @@ urlpatterns = [
 
 
 
-
-    
+    path('mealDishDashboard', views.mealDishDashboard, name='meal_dish_dashboard'),
+    path('addDishWiseMeal', views.addDishWiseMeal, name='add_dish_wise_meal'),
 ]

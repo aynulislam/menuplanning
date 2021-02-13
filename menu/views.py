@@ -246,3 +246,66 @@ def deleteDishSetup(request,id):
         messages.warning(request,message)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+
+from .models import Meal, Dish
+
+def mealDishDashboard(request):
+    all_meal = Meal.objects.all()
+    all_dish = Dish.objects.all()
+    all_meal_wise_dish = MealwiseDish.objects.all()
+    context = {
+        'all_meal':all_meal, 
+        'all_dish': all_dish,
+        'all_meal_wise_dish' : all_meal_wise_dish
+    }
+    return render(request, 'mealDishDashboard.html',context)
+
+
+
+
+
+def addDishWiseMeal(request):
+    if request.method == 'POST':
+        getDate = request.POST.get('meal_date')
+        getMeal = request.POST.getlist('meal')
+        getDish = request.POST.getlist('dish')
+        print('fucking loop',len(getMeal))
+        for i in range(0,len(getMeal)):
+            data = {
+               'meal_date': getDate,
+               'meal': getMeal[i],
+               'dish':  getDish[i],
+               'craeted_by': 1,
+               'modified_by': 1 
+            }
+            print(data)
+            mealWiseDish = MealWiseDishForm(data)
+            if mealWiseDish.is_valid():
+                mealWiseDish.save()
+                
+            else:
+                for field in mealWiseDish:
+                    for error in field.errors:
+                        messages.warning(request, "%s : %s" % (field.name, error))
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        message = 'done'
+        messages.success(request, message)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
+    else:
+        print('not a post method')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+
+
+
+
+
+
+
+
+
+
+
